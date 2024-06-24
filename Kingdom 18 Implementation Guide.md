@@ -4,7 +4,7 @@ This guide contains a list of all necessary files and changes needed to manually
 
 ## RomFS
 
-The GitHub repository mod uses the custom developer name `PuzzleWorld` for Kingdom 18. In all the following examples, `Puzzle` can be replaced with any custom developer name, as long as your naming scheme remains consistent. The example kingdom includes two stages, a main home stage `PuzzleWorldHomeStage` and a subarea stage `PuzzleWorldHomeStage`.
+The GitHub repository mod uses the custom developer name `PuzzleWorld` for Kingdom 18. In all the following examples, `Puzzle` can be replaced with any custom developer name, as long as your naming scheme remains consistent. The example kingdom includes two stages, a main home stage `PuzzleWorldHomeStage` and a subarea stage `PuzzleWorldSubareaStage`.
 
 ### `LayoutData`
 
@@ -120,7 +120,7 @@ This file is not necessary, but it contains preview textures for hint art. If yo
 <details>
 <summary>/ObjectData/Texture2dMap.szs</summary>
 
-This file contains the main images for each kingdom's map (the image with the large coordinate grid). This image has dimensions `2048 x 2048`, place the image into `/Texture2dMap.bfres/Textures` and name it `PuzzleWorldHomeStage`. If your kingdom has different maps for different scenarios, append the corresponding scenario number to each image. Each map also has a corresponding .byml file in the root directory of the file describing translation data to align the mario marker on the map. Duplicate an existing .byml file and rename it to `PuzzleWorldHomeStage.byml`. The `ProjMatrix`, `ViewMatrix` and `ProjViewMatrix` arrays control the scale and positioning of the map relative to the in-game coordinate system (coordinate translation values are multiplied by 100 in the arrays).
+This file contains the main images for each kingdom's map (the image with the large coordinate grid). This image has dimensions `2048 x 2048`, place the image into `/Texture2dMap.bfres/Textures` and name it `PuzzleWorldHomeStage`. If your kingdom has different maps for different scenarios, append the corresponding scenario number to each image. Each map also has a corresponding .byml file in the root directory of the file describing translation data to align the mario marker on the map. Duplicate an existing .byml file and rename it to `PuzzleWorldHomeStage.byml`. The `ProjMatrix`, `ViewMatrix` and `ProjViewMatrix` arrays control the scale and positioning of the map relative to the in-game coordinate system (Spotlight coordinate values are multiplied by 100 in the arrays).
 </details>
 
 <details>
@@ -194,7 +194,7 @@ Every subarea stage should also have design stage data. Ensure it is named corre
 <details>
 <summary>/SystemData/CheckpointFlagInfo.szs</summary>
 
-This file contains the checkpoint flag data for all kingdoms. Every kingdom has an associated .byml file in the root directory corresponding to every scenario. Duplicate one of these files and rename it to `FlagList_PuzzleWorldHomeStage_1.byml`. The .byml contains a `FlagList` array, where each entry contains a dictionary represents a checkpoint flag present in the scenario (if your kingdom has no checkpoints, this array can be left empty). These dictionaries contain a `FlagIdStr` element containing the stage obj ID of the checkpoint object, and a `Trans` element containing the position of the flag (with coordinate values multiplied by 100). Add as many entries into the `FlagList` array as needed, and duplicate the created .byml for each scenario for the custom kingdom.
+This file contains the checkpoint flag data for all kingdoms. Every kingdom has an associated .byml file in the root directory corresponding to every scenario. Duplicate one of these files and rename it to `FlagList_PuzzleWorldHomeStage_1.byml`. The .byml contains a `FlagList` array, where each entry contains a dictionary represents a checkpoint flag present in the scenario (if your kingdom has no checkpoints, this array can be left empty). These dictionaries contain a `FlagIdStr` element containing the stage obj ID of the checkpoint object, and a `Trans` element containing the position of the flag (with Spotlight coordinate values multiplied by 100). Add as many entries into the `FlagList` array as needed, and duplicate the created .byml for each scenario for the custom kingdom.
 </details>
 
 <details>
@@ -224,7 +224,7 @@ This file contains information about each kingdom's moons. Each .byml file conta
 - `ScenarioName`: Developer scenario notes (not necessary, just copy from an existing moon)
 - `StageName`: The stage file the moon is located in (e.g. `PuzzleWorldSubareaStage`)
 - `UniqueId`: A unique ID to given each moon (starting from 2000 should prevent overlaps)
-- `Trans`: The position of the moon (with coordinate values multiplied by 100)
+- `Trans`: The position of the moon (with Spotlight coordinate values multiplied by 100)
 
 Additionally, there is another .byml file `ShinePosList.byml` in the root directory. Add a dictionary entry for each custom moon, with a `UniqueId` element matching the one given in the above .byml file, and one or more elements labelled with numbers, representing the corresponding coordinates of the moon in each numbered scenario the moon exists in.
 
@@ -251,7 +251,7 @@ This file contains the list of kingdoms of the game; it's the most vital file to
     - `IsCrash`: Whether the Odyssey crashes onto the custom kingdom (set to false)
     - `ShineNumInfo`: The number of moons needed to unlock the kingdom (set to any number, or to `880` as a 100% completion unlock)
 - `StagePosList.byml`: Subarea stage positions
-  - For every subarea stage in the custom kingdom, add a dictionary entry with the same name as the custom subarea. In each entry, add a dictionary containing the position of the subarea entrance from the main world home stage (with coordinate values multiplied by 100). For every scenario this subarea is accessible, duplicate this coordinate dictionary and name each entry after its corresponding scenario number. For scenarios where the subarea is inaccessible, add an empty dictionary with the corresponding scenario number.
+  - For every subarea stage in the custom kingdom, add a dictionary entry with the same name as the custom subarea. In each entry, add a dictionary containing the position of the subarea entrance from the main world home stage (with Spotlight coordinate values multiplied by 100). For every scenario this subarea is accessible, duplicate this coordinate dictionary and name each entry after its corresponding scenario number. For scenarios where the subarea is inaccessible, add an empty dictionary with the corresponding scenario number.
 - `ExStageList.byml`: List of ExStage subareas
   - ExStage subareas are common stages containing a main moon and a secondary hidden moon. Add the names of any custom ExStage subareas to this file.
 - `CollectCoinNum.byml`: Regional coin number list
