@@ -59,6 +59,9 @@ void worldSelectPatches() {
     p.Seek(0x5022B0);
     p.WriteInst(inst::CmpImmediate(reg::X20, 0x90));
 
+    //get shine
+    p.Seek(0x51EAD8);
+    p.WriteInst(inst::CmpImmediate(reg::W1, 0x898));
 }
 
 void worldMoviePatch() {

@@ -36,6 +36,7 @@ include_directories(${PROJECT_SOURCE_DIR}/libs/NintendoSDK/nvnTool)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/src/lib)
 include_directories(${PROJECT_SOURCE_DIR}/src/program)
+include_directories(${PROJECT_SOURCE_DIR}/src/program/system)
 
 file(GLOB_RECURSE SOURCES_ASM ${PROJECT_SOURCE_DIR}/src/*.s ${PROJECT_SOURCE_DIR}/libs/*.s  ${PROJECT_SOURCE_DIR}/libs/*.s)
 file(GLOB_RECURSE SOURCES_H ${PROJECT_SOURCE_DIR}/src/*.h ${PROJECT_SOURCE_DIR}/src/*.hpp   ${PROJECT_SOURCE_DIR}/libs/*.h ${PROJECT_SOURCE_DIR}/libs/*.hpp)

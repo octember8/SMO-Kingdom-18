@@ -2,6 +2,7 @@
 #include "patches.hpp"
 #include "logger/Logger.hpp"
 #include "fs.h"
+#include "os.h"
 #include "helpers/InputHelper.h"
 #include "helpers/PlayerHelper.h"
 #include "ExceptionHandler.h"
@@ -10,13 +11,15 @@
 #include <prim/seadSafeString.h>
 #include <resource/seadResourceMgr.h>
 #include <filedevice/nin/seadNinSDFileDeviceNin.h>
+#include <filedevice/nin/seadNinSaveFileDeviceNin.h>
 #include <filedevice/seadFileDeviceMgr.h>
+#include <filedevice/seadFileDevice.h>
 #include <filedevice/seadPath.h>
 #include <resource/seadArchiveRes.h>
 #include <heap/seadHeapMgr.h>
-#include <devenv/seadDebugFontMgrNvn.h>
-#include <gfx/seadTextWriter.h>
-#include <gfx/seadViewport.h>
+// #include <devenv/seadDebugFontMgrNvn.h>
+// #include <gfx/seadTextWriter.h>
+// #include <gfx/seadViewport.h>
 
 #include <al/Library/File/FileLoader.h>
 #include <al/Library/File/FileUtil.h>
@@ -27,6 +30,9 @@
 #include <game/HakoniwaSequence/HakoniwaSequence.h>
 #include <game/GameData/GameDataFunction.h>
 
+// #include <NintendoSDK/nn/types.h>
+
+#include "system/SDFileRedirection.h"
 #include "rs/util.hpp"
 
 HOOK_DEFINE_INLINE(WorldMovieResource) {
@@ -99,6 +105,32 @@ HOOK_DEFINE_TRAMPOLINE(MoonRockCheck) {
     }
 };
 
+HOOK_DEFINE_TRAMPOLINE(SaveWriteHook){
+    static s32 Callback(void* thisPtr, sead::FileDevice* device, const char* name) {
+        nn::fs::DirectoryEntryType type;
+        if (!nn::fs::GetEntryType(&type, "sd:/smo/Kingdom18/save").isSuccess() ||
+            type != nn::fs::DirectoryEntryType_Directory) {
+            nn::fs::CreateDirectory("sd:/smo/");
+            nn::fs::CreateDirectory("sd:/smo/Kingdom18/");
+            nn::fs::CreateDirectory("sd:/smo/Kingdom18/save/");
+        }
+
+        al::StringTmp<50> newPath("smo/Kingdom18/save/%s", name);
+        sead::NinSaveFileDevice newDevice("sd");
+
+        return Orig(thisPtr, &newDevice, newPath.cstr());
+    }
+};
+
+HOOK_DEFINE_TRAMPOLINE(SaveReadHook){
+    static s32 Callback(void* thisPtr, sead::FileDevice* device, const char* name, void* flags) {
+        al::StringTmp<50> newPath("smo/Kingdom18/save/%s", name);
+        sead::NinSaveFileDevice newDevice("sd");
+
+        return Orig(thisPtr, &newDevice, newPath.cstr(), flags);
+    }
+};
+
 extern "C" void exl_main(void *x0, void *x1) {
     /* Setup hooking enviroment. */
     exl::hook::Initialize();
@@ -106,7 +138,10 @@ extern "C" void exl_main(void *x0, void *x1) {
     nn::os::SetUserExceptionHandler(exception_handler, nullptr, 0, nullptr);
     installExceptionStub();
 
-    //Logger::instance().init(LOGGER_IP, 3080);
+    installSDFileRedirection();
+
+    SaveReadHook::InstallAtSymbol("_ZN2al20SaveDataSequenceRead4readEPN4sead10FileDeviceEPKcPj");
+    SaveWriteHook::InstallAtSymbol("_ZN2al21SaveDataSequenceWrite5writeEPN4sead10FileDeviceEPKc");
 
     runCodePatches();
 

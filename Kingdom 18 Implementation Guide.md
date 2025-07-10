@@ -396,6 +396,54 @@ Note: The "Current Objective" of custom kingdoms can only be viewed within the c
 
 </details>
 
+<details>
+<summary>SaveWriteHook</summary>
+
+```c++
+HOOK_DEFINE_TRAMPOLINE(SaveWriteHook){
+    static s32 Callback(void* thisPtr, sead::FileDevice* device, const char* name) {
+        nn::fs::DirectoryEntryType type;
+        if (!nn::fs::GetEntryType(&type, "sd:/smo/Kingdom18/save").isSuccess() ||
+            type != nn::fs::DirectoryEntryType_Directory) {
+            nn::fs::CreateDirectory("sd:/smo/");
+            nn::fs::CreateDirectory("sd:/smo/Kingdom18/");
+            nn::fs::CreateDirectory("sd:/smo/Kingdom18/save/");
+        }
+
+        al::StringTmp<50> newPath("smo/Kingdom18/save/%s", name);
+        sead::NinSaveFileDevice newDevice("sd");
+
+        return Orig(thisPtr, &newDevice, newPath.cstr());
+    }
+};
+```
+Trampoline hook at symbol `_ZN2al21SaveDataSequenceWrite5writeEPN4sead10FileDeviceEPKc`. When writing to a save file, this hook will determine if the save file directory `/smo/Kingdom18` exists at the SD card root; if not, it will create the necessary directories.
+
+This directory, either pre-existing or newly-created, will then be used as the path for the game system to write the save file to.
+
+Note: This save file redirection relies on the code in `system/SDFileRedirection.cpp`, authored by LynxDev. Ensure this file and its header are present in your working directory.
+
+</details>
+
+<details>
+<summary>SaveReadHook</summary>
+
+```c++
+HOOK_DEFINE_TRAMPOLINE(SaveReadHook){
+    static s32 Callback(void* thisPtr, sead::FileDevice* device, const char* name, void* flags) {
+        al::StringTmp<50> newPath("smo/Kingdom18/save/%s", name);
+        sead::NinSaveFileDevice newDevice("sd");
+
+        return Orig(thisPtr, &newDevice, newPath.cstr(), flags);
+    }
+};
+```
+Trampoline hook at symbol `_ZN2al20SaveDataSequenceRead4readEPN4sead10FileDeviceEPKcPj`. When reading from a save file, this hook will redirect the game to use the custom save file directory `/smo/Kingdom18` instead of the default directory.
+
+Note: This save file redirection relies on the code in `system/SDFileRedirection.cpp`, authored by LynxDev. Ensure this file and its header are present in your working directory.
+
+</details>
+
 ### `patches.cpp` Patches
 
 <details>
@@ -455,7 +503,7 @@ Note: The "Current Objective" of custom kingdoms can only be viewed within the c
 
 ## Save Files
 
-When opening a save file in the mod, new entries are automatically added into the save data. This means that any save files opened with the mod turned on will permanently affect its data. Here is a list of all save data entries modified by the mod, in the extreme case you need to modify it further or remove any changes caused by opening the mod (however it is recommended to avoid save editing and just back-up unaffected save files).
+When opening a save file in the mod, new entries are automatically added into the save data. This means that any save files opened with the mod turned on will permanently affect its data. To prevent this from corrupting the game, a custom save file system is used to isolate these affected files from the rest of your system. Here is a list of all save data entries modified by the mod, in the extreme case you need to modify it further or remove any changes caused by opening the mod (however it is recommended to avoid save editing and just back-up unaffected save files).
 
 <details>
 <summary>Save File Data Entries</summary>

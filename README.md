@@ -3,7 +3,7 @@
 This is the repository for Super Mario Odyssey: Kingdom 18, a mod implementing an additional 18th kingdom into Super Mario Odyssey, in comparison to the original game's 17 kingdoms. This mod is chiefly aimed towards mod developers, providing examples and documentation as to how to use and implement an 18th kingdom into your own mods. This mod is for SMO v1.0 only.
 
 ## Save Files
-***Using this mod will irreversibly affect your save files.*** Opening the mod will automatically add Kingdom 18 data into any active save file. If a save file with Kingdom 18 data is loaded when the mod is turned off, the game will not open. **Back-up all your save files before using this mod, and remove all affected save files before turning off the mod.** A 100% save file, excluding Kingdom 18, is provided in the repo.
+***This mod uses a custom save file system. Save files affected by this mod will be incompatible without this mod.*** Opening the mod will automatically create a `/smo/Kingdom18` directory at the root of the SD card to store these custom save files. Use this directory if you wish to edit/swap any Kingdom 18 save file. If a save file from this directory containing Kingdom 18 data is loaded when the mod is turned off, the game will not open (this can only happen by moving a save file from this directory to your default save directory). **It is strongly recommended to back-up all your save files anyway before using this mod, and to not move any affected save files in the custom directory.** A 100% save file, excluding Kingdom 18 progress, is provided in the repo.
 
 
 ## Build Instructions
@@ -42,7 +42,7 @@ A guide for manually implementing new kingdoms has been included in the repo, `K
 ## Credits
 - [Shadow](https://github.com/shadowninja108/exlaunch) - Exlaunch & Hardware troubleshooting
 - [CraftyBoss](https://github.com/CraftyBoss/SMO-Exlaunch-Base) - SMO Exlaunch Base & Spinning emoji video
-- [hesmakka](https://github.com/LynxDev2) - ExeFS help
+- [LynxDev](https://github.com/LynxDev2) - Custom save file system & ExeFS help
 - Slycer - RomFS help
 - [MonsterDruide1](https://github.com/MonsterDruide1/OdysseyDecomp/tree/master) - Extra help
 - chico88959 - Extra help
