@@ -152,7 +152,7 @@ This file contains the images used in the save file icons. In `/TextureSaveData.
 <details>
 <summary>/ObjectData/TextureWorldMap.szs</summary>
 
-When a kingdom is being unlocked for the first time in the world map, the preview video is replaced with a static preview image, contained in this file. In `/TextureWorldMap.bfres/Textures` add the preview image, with dimensions `640 x 352`, and rename it `PuzzlePicImage`.
+When a kingdom is being unlocked for the first time in the world map, the preview video is replaced with a static preview image, contained in this file. In `/TextureWorldMap.bfres/Textures` add the preview image, with dimensions `640 x 352`, and rename it `PuzzlePicImage`. NOTE: If you are not building your own ExeFS, you cannot rename the `Puzzle` string in the texture name; it must be `PuzzlePicImage`. This is because this name is the only place that the developer name `Puzzle` is hardcoded, and the only way to change it is to change the name in the source code and build new ExeFS files.
 </details>
 
 <details>
